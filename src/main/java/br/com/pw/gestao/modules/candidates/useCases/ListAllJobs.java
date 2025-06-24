@@ -14,6 +14,6 @@ public class ListAllJobs {
     @Autowired
     private JobRepository jobRepository;
     public List<JobsEntity> execute(String filter){
-       return this.jobRepository.findByDescriptionContaining(filter);
+       return this.jobRepository.findByDescriptionContainingIgnoreCase(filter);
     }
 }

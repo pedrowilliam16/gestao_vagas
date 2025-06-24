@@ -12,16 +12,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.pw.gestao.modules.candidates.dto.ProfileCandidateDTO;
 import br.com.pw.gestao.modules.candidates.entities.CandidateEntity;
 import br.com.pw.gestao.modules.candidates.useCases.CandidateUseCase;
 import br.com.pw.gestao.modules.candidates.useCases.ListAllJobs;
 import br.com.pw.gestao.modules.candidates.useCases.ProfileCandidateUseCase;
 import br.com.pw.gestao.modules.company.entities.JobsEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/candidate")
+@Tag(name="Candidato", description="Informações do Candidato")
 public class CandidateController {
 
     @Autowired
@@ -34,6 +44,15 @@ public class CandidateController {
     private ListAllJobs listAllJobs;
 
     @PostMapping("/")
+    @Operation(summary="Cadastro de candidato", description="Essa função é responsável por cadastrar os candidatos")
+    @ApiResponses({
+        @ApiResponse(responseCode="200", content={
+            @Content(
+                schema=@Schema(implementation=CandidateEntity.class)
+            )
+        }),
+        @ApiResponse(responseCode="400", description="Usuário já existe")
+    })
     public ResponseEntity<Object> create (@Valid @RequestBody CandidateEntity candidateEntity) {        
         try {
             var result = this.candidateUserCase.execute(candidateEntity);
@@ -46,6 +65,15 @@ public class CandidateController {
 
     @GetMapping("/")
     @PreAuthorize("hasRole('CANDIDATE')")
+     @Operation(summary="Perfil do candidato", description="Essa função é responsável por mostrar o perfil do candidato")
+    @ApiResponses({
+        @ApiResponse(responseCode="200", content={
+            @Content(
+                schema=@Schema(implementation=ProfileCandidateDTO.class)
+            )
+        }),
+        @ApiResponse(responseCode="400", description="User not found")
+    })
     public ResponseEntity<Object> get(HttpServletRequest request){
         var idCandidate = request.getAttribute("candidate_id");
         try {
@@ -59,6 +87,15 @@ public class CandidateController {
 
     @GetMapping("/job")
     @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(summary="Listagem de vagas diponível para o candidato", description="Essa função é responsável por listar todas as vagas baseado no filtro")
+    @ApiResponses({
+        @ApiResponse(responseCode="200", content={
+            @Content(
+                array= @ArraySchema(schema=@Schema(implementation=JobsEntity.class))
+            )
+        })
+    })
+    @SecurityRequirement(name="jwt_auth")
     public List<JobsEntity> listAllJobs (@RequestParam String filter) {
         return this.listAllJobs.execute(filter); 
     }
