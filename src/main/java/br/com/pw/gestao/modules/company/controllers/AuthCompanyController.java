@@ -9,16 +9,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pw.gestao.modules.company.dto.AuthCompanyRequestDTO;
+import br.com.pw.gestao.modules.company.dto.AuthCompanyResponseDTO;
 import br.com.pw.gestao.modules.company.useCases.AuthCompanyUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/company")
+@Tag(name="Autentificação da Empresa", description="Token da Empresa")
 public class AuthCompanyController {
 
     @Autowired
     private AuthCompanyUseCase authCompanyUseCase;
 
     @PostMapping("/auth")
+    @Operation(summary="Token da empresa", description="Essa função é responsável por gerar o token da empresa")
+    @ApiResponses({
+        @ApiResponse(responseCode="200", content={
+            @Content(
+                schema=@Schema(implementation=AuthCompanyResponseDTO.class)
+            )
+        }),
+        @ApiResponse(responseCode="401", description="Username/Password incorret")
+    })
     public ResponseEntity<Object> create (@RequestBody AuthCompanyRequestDTO authCompanyDTO) {
         try {
             var result = this.authCompanyUseCase.execute(authCompanyDTO);

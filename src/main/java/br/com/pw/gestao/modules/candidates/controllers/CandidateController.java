@@ -65,7 +65,8 @@ public class CandidateController {
 
     @GetMapping("/")
     @PreAuthorize("hasRole('CANDIDATE')")
-     @Operation(summary="Perfil do candidato", description="Essa função é responsável por mostrar o perfil do candidato")
+    @Operation(summary="Perfil do candidato", description="Essa função é responsável por mostrar o perfil do candidato")
+    @SecurityRequirement(name="jwt_auth")
     @ApiResponses({
         @ApiResponse(responseCode="200", content={
             @Content(

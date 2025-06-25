@@ -32,10 +32,10 @@ public class AuthCandidateUseCase {
    private PasswordEncoder passwordEncoder;
 
    public AuthCandidateResponseDTO execute(AuthCandidateRequestDTO candidateRequestDTO) {
-       var candidate = this.candidateRepository.findByUsername(candidateRequestDTO.username())
+       var candidate = this.candidateRepository.findByUsername(candidateRequestDTO.getUsername())
            .orElseThrow(InvalidCredentials::new);
 
-       var passwordMatches = passwordEncoder.matches(candidateRequestDTO.password(), candidate.getPassword());
+       var passwordMatches = passwordEncoder.matches(candidateRequestDTO.getPassword(), candidate.getPassword());
 
        if (!passwordMatches) {
            throw new InvalidCredentials();
