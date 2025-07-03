@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.pw.gestao.modules.candidates.dto.ProfileCandidateDTO;
 import br.com.pw.gestao.modules.candidates.entities.CandidateEntity;
+import br.com.pw.gestao.modules.candidates.useCases.ApplyJobCandidateUseCase;
 import br.com.pw.gestao.modules.candidates.useCases.CandidateUseCase;
 import br.com.pw.gestao.modules.candidates.useCases.ListAllJobs;
 import br.com.pw.gestao.modules.candidates.useCases.ProfileCandidateUseCase;
@@ -42,6 +43,9 @@ public class CandidateController {
 
     @Autowired
     private ListAllJobs listAllJobs;
+
+    @Autowired
+    private ApplyJobCandidateUseCase applyJobCandidateUseCase;
 
     @PostMapping("/")
     @Operation(summary="Cadastro de candidato", description="Essa função é responsável por cadastrar os candidatos")
@@ -96,8 +100,25 @@ public class CandidateController {
             )
         })
     })
+
     @SecurityRequirement(name="jwt_auth")
     public List<JobsEntity> listAllJobs (@RequestParam String filter) {
         return this.listAllJobs.execute(filter); 
+    }
+
+
+    @PostMapping("/job/apply")
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @SecurityRequirement(name="jwt_auth")
+    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody String idJob){
+        var idCandidate = request.getAttribute("candidate_id");
+
+        try {
+            var result = applyJobCandidateUseCase.execute(idCandidate.toString(), idJob);
+            return ResponseEntity.ok().body(result); 
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

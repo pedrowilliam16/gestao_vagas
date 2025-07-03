@@ -8,7 +8,9 @@ import br.com.pw.gestao.modules.candidates.entities.CandidateEntity;
 
 
 
+
 public interface CandidateRepository extends JpaRepository<CandidateEntity, String> {
     Optional<CandidateEntity> findByUsernameOrEmail(String username, String email);
     Optional<CandidateEntity> findByUsername(String username);
+    Optional<CandidateEntity> findById(String id);
 }
