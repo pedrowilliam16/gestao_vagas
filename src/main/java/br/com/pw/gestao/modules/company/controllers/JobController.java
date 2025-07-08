@@ -1,6 +1,7 @@
 package br.com.pw.gestao.modules.company.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,16 +40,23 @@ public class JobController {
             )
         })
     })
-    public JobsEntity create (@Valid @RequestBody JobCreateDTO jobCreateDTO ,HttpServletRequest request) {
+    public ResponseEntity<Object> create (@Valid @RequestBody JobCreateDTO jobCreateDTO ,HttpServletRequest request) {
         var companyId = request.getAttribute("company_id");
 
-       var jobsEntity = JobsEntity.builder()
-        .description(jobCreateDTO.getDescription())
-        .level(jobCreateDTO.getLevel())
-        .benefits(jobCreateDTO.getBenefits())
-        .companyId(companyId.toString())
-        .build()
-        ;
-        return this.jobUseCase.execute(jobsEntity); 
+        try {
+            var jobsEntity = JobsEntity.builder()
+            .description(jobCreateDTO.getDescription())
+            .level(jobCreateDTO.getLevel())
+            .benefits(jobCreateDTO.getBenefits())
+            .companyId(companyId.toString())
+            .build()
+            ;
+            var result = this.jobUseCase.execute(jobsEntity);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        
+    
     }
 }

@@ -1,5 +1,7 @@
 package br.com.pw.gestao.modules.company.controllers;
 
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,5 +69,23 @@ public class CreateJobControllerTest {
        .andExpect(MockMvcResultMatchers.status().isOk());
        
        System.out.println(result);
+    }
+
+    @Test
+    public void should_not_be_able_to_create_a_new_job_if_company_not_found() throws Exception{
+        var jobCreateDTO =  JobCreateDTO.builder()
+        .benefits("BENEFITS_TEST")
+        .description("DESCRIPTION_TEST")
+        .level("LEVEL_TEST")
+        .build();
+        
+        mvc.perform(MockMvcRequestBuilders.post("/company/job")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtils.objectToJSON(jobCreateDTO))
+            .header("Authorization", TestUtils.generateToken(UUID.randomUUID().toString(), "PWK1NGRS!")))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            ;
+    
+
     }
 }
