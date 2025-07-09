@@ -1,4 +1,4 @@
-package br.com.pw.gestao.modules.candidates.useCases;
+package br.com.pw.gestao.modules.candidates.usecases;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,14 +21,19 @@ import br.com.pw.gestao.modules.candidates.repository.CandidateRepository;
 @Service
 public class AuthCandidateUseCase {
 
-   @Value("${security.token.secret.candidate}")
-   private String secretKey;
+    private final PasswordEncoder passwordEncoder;
+    private final CandidateRepository candidateRepository;
 
-   @Autowired
-   private CandidateRepository candidateRepository;
+    @Value("${security.token.secret.candidate}")
+    private String secretKey;
 
-   @Autowired
-   private PasswordEncoder passwordEncoder;
+    public AuthCandidateUseCase (
+        CandidateRepository candidateRepository,
+        PasswordEncoder passwordEncoder
+    ) {
+        this.candidateRepository = candidateRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
    public AuthCandidateResponseDTO execute(AuthCandidateRequestDTO candidateRequestDTO) {
        var candidate = this.candidateRepository.findByUsername(candidateRequestDTO.getUsername())
@@ -57,9 +61,9 @@ public class AuthCandidateUseCase {
        var formattedExpiration = formatter.format(expiration);
 
        return AuthCandidateResponseDTO.builder()
-           .acess_token(token)
-           .expires_in_minutes(expiresInMinutes)
-           .expires_at(formattedExpiration)
+           .acessToken(token)
+           .expiresInMinutes(expiresInMinutes)
+           .expiresAt(formattedExpiration)
            .build();
    }
 }

@@ -2,7 +2,6 @@ package br.com.pw.gestao.security;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,8 +17,13 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class SecurityCompanyFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JWTCompanyProvider jwtProvider;
+    private final JWTCompanyProvider jwtProvider;
+
+    public SecurityCompanyFilter (
+        JWTCompanyProvider jwtProvider
+    ) {
+        this.jwtProvider=jwtProvider;
+    }
 
     @Override
     protected void doFilterInternal(

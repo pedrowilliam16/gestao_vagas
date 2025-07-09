@@ -1,4 +1,4 @@
-package br.com.pw.gestao.modules.company.useCases;
+package br.com.pw.gestao.modules.company.usecases;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,11 +25,16 @@ public class AuthCompanyUseCase {
     @Value("${security.token.secret}")
     private String secretKey;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final CompanyRepository companyRepository;
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    public AuthCompanyUseCase (
+        PasswordEncoder passwordEncoder,
+        CompanyRepository companyRepository
+    ) {
+        this.passwordEncoder=passwordEncoder;
+        this.companyRepository=companyRepository;
+    }
 
     public AuthCompanyResponseDTO execute (AuthCompanyRequestDTO authCompanyRequestDTO) {
        var company = this.companyRepository.findByUsername(authCompanyRequestDTO.getUsername()).orElseThrow(InvalidCredentials::new); 
@@ -56,9 +60,9 @@ public class AuthCompanyUseCase {
        var formattedExpiration = formatter.format(expiration);
 
        return AuthCompanyResponseDTO.builder()
-           .acess_token(token)
-           .expires_in_minutes(expiresInMinutes)
-           .expires_at(formattedExpiration)
+           .accessToken(token)
+           .expiresInMinutes(expiresInMinutes)
+           .expiresAt(formattedExpiration)
            .build();
         }
     }

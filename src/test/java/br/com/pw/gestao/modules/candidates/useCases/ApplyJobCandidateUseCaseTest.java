@@ -19,12 +19,13 @@ import br.com.pw.gestao.modules.candidates.entities.ApplyJobEntity;
 import br.com.pw.gestao.modules.candidates.entities.CandidateEntity;
 import br.com.pw.gestao.modules.candidates.repository.ApplyJobRepository;
 import br.com.pw.gestao.modules.candidates.repository.CandidateRepository;
+import br.com.pw.gestao.modules.candidates.usecases.ApplyJobCandidateUseCase;
 import br.com.pw.gestao.modules.company.entities.JobsEntity;
 import br.com.pw.gestao.modules.company.repository.CompanyRepository;
 import br.com.pw.gestao.modules.company.repository.JobRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ApplyJobCandidateUseCaseTest {
+class ApplyJobCandidateUseCaseTest {
     
     @InjectMocks //Da camada que estou fazendo o teste
     private ApplyJobCandidateUseCase applyJobCandidateUseCase;
@@ -43,7 +44,7 @@ public class ApplyJobCandidateUseCaseTest {
 
     @Test
     @DisplayName("Should not be able to apply job with candidate not found")
-    public void should_not_be_able_to_apply_job_with_candidate_not_found(){
+    void should_not_be_able_to_apply_job_with_candidate_not_found(){
         try {
             applyJobCandidateUseCase.execute(null, null);
 
@@ -54,7 +55,7 @@ public class ApplyJobCandidateUseCaseTest {
     }
     @Test
     @DisplayName("Should not be able to apply job with job not found")
-    public void should_not_be_able_to_apply_job_with_job_not_found(){
+    void should_not_be_able_to_apply_job_with_job_not_found(){
         var idCandidate = UUID.randomUUID().toString();
         var candidate = new CandidateEntity();
         candidate.setId(idCandidate);
@@ -70,7 +71,7 @@ public class ApplyJobCandidateUseCaseTest {
 
     @Test
     @DisplayName("Should be able to create a new apply job")
-    public void should_be_able_to_create_a_new_apply_job(){
+    void should_be_able_to_create_a_new_apply_job(){
         var idCandidate = UUID.randomUUID().toString();
         var idJob = UUID.randomUUID().toString();
 

@@ -1,6 +1,5 @@
-package br.com.pw.gestao.modules.candidates.useCases;
+package br.com.pw.gestao.modules.candidates.usecases;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,18 +10,25 @@ import br.com.pw.gestao.modules.candidates.repository.CandidateRepository;
 @Service
 public class CandidateUseCase {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final CandidateRepository candidateRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private CandidateRepository candidateRepository;
+    public CandidateUseCase (
+        PasswordEncoder passwordEncoder,
+        CandidateRepository candidateRepository
+    ) {
+        this.passwordEncoder = passwordEncoder;
+        this.candidateRepository = candidateRepository;
+    }
 
-    public CandidateEntity execute (CandidateEntity candidateEntity){
-        this.candidateRepository.findByUsernameOrEmail(candidateEntity.getUsername(), candidateEntity.getEmail()).ifPresent((user)->{
-            throw new UserFoundExists();
-        });
-          var passwordEncoder = this.passwordEncoder.encode(candidateEntity.getPassword());
-          candidateEntity.setPassword(passwordEncoder); 
-          return this.candidateRepository.save(candidateEntity);
+    
+    public CandidateEntity execute(CandidateEntity candidateEntity) {
+        this.candidateRepository.findByUsernameOrEmail(candidateEntity.getUsername(), candidateEntity.getEmail())
+            .ifPresent(user -> {
+                throw new UserFoundExists();
+            });
+        var encodedPassword = this.passwordEncoder.encode(candidateEntity.getPassword());
+        candidateEntity.setPassword(encodedPassword); 
+        return this.candidateRepository.save(candidateEntity);
     }
 }

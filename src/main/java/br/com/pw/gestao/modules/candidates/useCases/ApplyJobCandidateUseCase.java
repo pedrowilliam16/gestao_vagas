@@ -1,5 +1,4 @@
-package br.com.pw.gestao.modules.candidates.useCases;
-import org.springframework.beans.factory.annotation.Autowired;
+package br.com.pw.gestao.modules.candidates.usecases;
 import org.springframework.stereotype.Service;
 
 import br.com.pw.gestao.exceptions.JobNotFound;
@@ -12,14 +11,19 @@ import br.com.pw.gestao.modules.company.repository.JobRepository;
 @Service
 public class ApplyJobCandidateUseCase {
 
-    @Autowired
-    private JobRepository jobRepository;
-    
-    @Autowired
-    private CandidateRepository candidateRepository;
-    
-    @Autowired
-    private ApplyJobRepository applyJobRepository;
+    private final ApplyJobRepository applyJobRepository;
+    private final CandidateRepository candidateRepository;
+    private final JobRepository jobRepository;
+
+    public ApplyJobCandidateUseCase (
+        JobRepository jobRepository,
+        CandidateRepository candidateRepository,
+        ApplyJobRepository applyJobRepository
+    ) {
+        this.jobRepository = jobRepository;
+        this.candidateRepository = candidateRepository;
+        this.applyJobRepository = applyJobRepository;
+    }
 
     
     public ApplyJobEntity execute(String idCandidate, String idJob){

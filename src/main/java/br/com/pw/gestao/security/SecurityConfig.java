@@ -1,6 +1,5 @@
 package br.com.pw.gestao.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,16 +13,22 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private SecurityCompanyFilter securityCompanyFilter;
+    private final SecurityCompanyFilter securityCompanyFilter;
+    private final SecurityCandidateFilter securityCandidateFilter;
 
-    @Autowired
-    private SecurityCandidateFilter securityCandidateFilter;
+    public SecurityConfig(
+         SecurityCompanyFilter securityCompanyFilter,
+         SecurityCandidateFilter securityCandidateFilter
+    ) {
+        this.securityCandidateFilter=securityCandidateFilter;
+        this.securityCompanyFilter=securityCompanyFilter;
+    }
 
-    private static final String[] SWAGGER_LIST = {
+    private static final String[] PERMIT_ALL_LIST = {
         "/swagger-ui/**",
         "/v3/api-docs/**",
-        "/swagger-resources/**"
+        "/swagger-resources/**",
+        "/actuator/**"
     };
 
     @Bean
@@ -34,7 +39,7 @@ public class SecurityConfig {
             .requestMatchers("/company/").permitAll()
             .requestMatchers("/company/auth").permitAll()
             .requestMatchers("/candidate/auth").permitAll()
-            .requestMatchers(SWAGGER_LIST).permitAll()
+            .requestMatchers(PERMIT_ALL_LIST).permitAll()
             
             ;
             auth.anyRequest().authenticated();

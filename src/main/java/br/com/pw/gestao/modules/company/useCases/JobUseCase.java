@@ -1,6 +1,5 @@
-package br.com.pw.gestao.modules.company.useCases;
+package br.com.pw.gestao.modules.company.usecases;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.pw.gestao.modules.company.entities.JobsEntity;
@@ -10,8 +9,13 @@ import br.com.pw.gestao.modules.company.repository.JobRepository;
 @Service
 public class JobUseCase {
     
-    @Autowired
-    private JobRepository jobRepository;
+    private final JobRepository jobRepository;
+
+    public JobUseCase (
+        JobRepository jobRepository
+    ) {
+        this.jobRepository=jobRepository;
+    }
 
     public JobsEntity execute (JobsEntity jobsEntity) {
         return this.jobRepository.save(jobsEntity);

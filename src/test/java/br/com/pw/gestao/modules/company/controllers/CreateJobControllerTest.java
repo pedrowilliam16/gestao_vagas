@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
@@ -30,21 +29,26 @@ public class CreateJobControllerTest {
     
     private MockMvc mvc;
     
-    @Autowired
-    private WebApplicationContext context;
+    private final WebApplicationContext context;
+    private final CompanyRepository companyRepository;
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    public CreateJobControllerTest (
+        WebApplicationContext context,
+        CompanyRepository companyRepository
+    ) {
+        this.context=context;
+        this.companyRepository=companyRepository;
+    }
 
     @Before
-    public void setup(){
+    void setup(){
         mvc = MockMvcBuilders.webAppContextSetup(context)
         .apply(SecurityMockMvcConfigurers.springSecurity())
         .build();
     }
 
     @Test
-    public void should_be_able_to_create_a_new_job() throws Exception{
+    void should_be_able_to_create_a_new_job() throws Exception{
 
         var company = CompanyEntity.builder()
         .description("COMPANY_DESCRIPTION")
@@ -72,7 +76,7 @@ public class CreateJobControllerTest {
     }
 
     @Test
-    public void should_not_be_able_to_create_a_new_job_if_company_not_found() throws Exception{
+    void should_not_be_able_to_create_a_new_job_if_company_not_found() throws Exception{
         var jobCreateDTO =  JobCreateDTO.builder()
         .benefits("BENEFITS_TEST")
         .description("DESCRIPTION_TEST")
