@@ -36,9 +36,8 @@ public class AuthCandidateUseCase {
     }
 
    public AuthCandidateResponseDTO execute(AuthCandidateRequestDTO candidateRequestDTO) {
-       var candidate = this.candidateRepository.findByUsername(candidateRequestDTO.getUsername())
-           .orElseThrow(InvalidCredentials::new);
-
+       var candidate = this.candidateRepository.findByUsername(candidateRequestDTO.getUsername()).orElseThrow(InvalidCredentials::new);
+       
        var passwordMatches = passwordEncoder.matches(candidateRequestDTO.getPassword(), candidate.getPassword());
 
        if (!passwordMatches) {
