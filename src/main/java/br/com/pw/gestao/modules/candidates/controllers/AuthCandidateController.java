@@ -27,7 +27,7 @@ public class AuthCandidateController {
     }
 
     @PostMapping("/auth")
-    @Operation(summary="Token do candidato", description="Essa função é responsável por gerar o token do candidato")
+    @Operation(summary="Tokn do candidato", description="Essa função é responsável por gerar o token do candidato")
     @ApiResponse(
         responseCode="200", 
         content=@Content(schema=@Schema(implementation=AuthCandidateResponseDTO.class))
