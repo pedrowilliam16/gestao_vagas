@@ -32,12 +32,13 @@ public class SecurityCandidateFilter extends OncePerRequestFilter {
 
         if (request.getRequestURI().startsWith("/candidate")) {
             String header = request.getHeader("Authorization");
-            if (header!=null) {
-                var token = this.jwtCandidateProvider.execute(header);
-                if (token==null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-           }
+            if (header != null && header.startsWith("Bearer ")) {
+                String tokenString = header.substring(7);
+                var token = this.jwtCandidateProvider.execute(tokenString);
+                if (token == null) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
            request.setAttribute("candidate_id", token.getSubject());
            var roles = token.getClaim("roles").asList(Object.class);
 
@@ -50,6 +51,8 @@ public class SecurityCandidateFilter extends OncePerRequestFilter {
 
            SecurityContextHolder.getContext().setAuthentication(auth);
         }
+        }else {
+            SecurityContextHolder.clearContext();
         }
 
         

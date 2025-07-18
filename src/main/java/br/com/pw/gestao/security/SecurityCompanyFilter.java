@@ -32,8 +32,9 @@ public class SecurityCompanyFilter extends OncePerRequestFilter {
     FilterChain filterChain) throws ServletException, IOException {
             if (request.getRequestURI().startsWith("/company")) {
                 String header = request.getHeader("Authorization");
-                if (header!=null) {
-                    var token = this.jwtProvider.validateToken(header);
+                if (header != null && header.startsWith("Bearer ")) {
+                    String tokenString = header.substring(7);
+                    var token = this.jwtProvider.validateToken(tokenString);
 
                     if (token==null) {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -52,7 +53,10 @@ public class SecurityCompanyFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext().setAuthentication(auth);
             }
+            } else {
+                    SecurityContextHolder.clearContext();
             }
+
         
             
                 filterChain.doFilter(request, response);
