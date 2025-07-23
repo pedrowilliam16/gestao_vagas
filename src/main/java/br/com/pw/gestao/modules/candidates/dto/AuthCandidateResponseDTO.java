@@ -1,6 +1,8 @@
 
 package br.com.pw.gestao.modules.candidates.dto;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +27,8 @@ public class AuthCandidateResponseDTO {
 
     @JsonProperty("expires_at")
     @Schema(example="24/06/2025 15:40")
-    private String expiresAt; 
+    private String expiresAt;
+    
+    private List<String> roles;
 
 }

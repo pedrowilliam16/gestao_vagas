@@ -46,13 +46,14 @@ public class AuthCandidateUseCase {
 
        var expiresInMinutes = 30L;
        var expiration = Instant.now().plus(Duration.ofMinutes(expiresInMinutes));
+       var roles = Arrays.asList("CANDIDATE");
 
        Algorithm algorithm = Algorithm.HMAC256(secretKey);
        var token = JWT.create()
            .withIssuer("javagas")
            .withSubject(candidate.getId())
            .withExpiresAt(expiration)
-           .withClaim("roles", Arrays.asList("CANDIDATE"))
+           .withClaim("roles",roles)
            .sign(algorithm);
 
        var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
@@ -63,6 +64,7 @@ public class AuthCandidateUseCase {
            .acessToken(token)
            .expiresInMinutes(expiresInMinutes)
            .expiresAt(formattedExpiration)
+           .roles(roles)
            .build();
    }
 }
