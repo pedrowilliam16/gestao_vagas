@@ -55,6 +55,8 @@ public class AuthCompanyUseCase {
        .sign(algorithm)
        ;
 
+       var roles = Arrays.asList("COMPANY");
+
        var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
            .withZone(ZoneId.systemDefault());
        var formattedExpiration = formatter.format(expiration);
@@ -63,6 +65,7 @@ public class AuthCompanyUseCase {
            .accessToken(token)
            .expiresInMinutes(expiresInMinutes)
            .expiresAt(formattedExpiration)
+           .roles(roles)
            .build();
         }
     }
