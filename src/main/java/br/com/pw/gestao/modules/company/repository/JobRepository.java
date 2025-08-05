@@ -9,4 +9,5 @@ import br.com.pw.gestao.modules.company.entities.JobsEntity;
 
 public interface  JobRepository extends JpaRepository<JobsEntity, String> {
     List<JobsEntity>findByDescriptionContainingIgnoreCase(String filter);
+    List<JobsEntity>findByCompanyId(String companyId);
 }
