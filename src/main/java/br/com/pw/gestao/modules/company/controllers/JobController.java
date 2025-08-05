@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/company/job")
 @Tag(name="Vagas", description="Cadastro de vagas")
 public class JobController {
     
@@ -39,7 +39,7 @@ public class JobController {
     private ListJobUseCase listJobUseCase;
 
 
-    @PostMapping("/job")
+    @PostMapping("/")
     @PreAuthorize("hasRole('COMPANY')")
     @Operation(summary="Criar vagas", description="Esse método é o endpoint para criação de uma nova vaga de emprego associada a uma empresa")
     @SecurityRequirement(name="jwt_auth")
